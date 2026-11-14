@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nova · Kaveri Handlooms</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Noto+Sans+Devanagari:wght@400;500&family=Noto+Sans+Kannada:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=7">
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar (visual only) -->
+    <!-- Sidebar: visual only. Nothing here is clickable. -->
+    <aside class="sidebar" aria-label="Navigation (preview)">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">Nova</span></div>
+
+      <div class="workspace">
+        <span class="ws-logo" aria-hidden="true">F</span>
+        <div class="ws-text"><div class="ws-name">Supra AI</div><div class="ws-plan">Growth plan</div></div>
+        <span class="ws-chevron" data-icon="chevrons"></span>
+      </div>
+
+      <div class="nav">
+        <div class="nav-label">Onboarding</div>
+        <div class="nav-item"><span data-icon="home"></span>Overview</div>
+        <div class="nav-item active" aria-current="page"><span data-icon="users"></span>Customers<span class="nav-count">12</span></div>
+        <div class="nav-item"><span data-icon="phone"></span>Calls<span class="nav-count">3</span></div>
+        <div class="nav-item"><span data-icon="check"></span>Verifications</div>
+
+        <div class="nav-label">Workspace</div>
+        <div class="nav-item"><span data-icon="plug"></span>Integrations</div>
+        <div class="nav-item"><span data-icon="chart"></span>Reports</div>
+        <div class="nav-item"><span data-icon="team"></span>Team</div>
+        <div class="nav-item"><span data-icon="settings"></span>Settings</div>
+      </div>
+
+      <div class="sidebar-foot">
+        <div class="usage">
+          <div class="usage-row"><span>Call minutes</span><span>142 / 500</span></div>
+          <div class="usage-bar"><i style="width: 28%"></i></div>
+        </div>
+        <div class="account">
+          <span class="account-avatar" aria-hidden="true">OA</span>
+          <div class="account-text"><div class="account-name">Ops Admin</div><div class="account-role">Admin · Supra AI</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- Header: title, one status chip, one mode switch -->
+      <header class="page-head">
+        <div class="title-row">
+          <h1>Kaveri Handlooms</h1>
+          <span id="status-chip"></span>
+        </div>
+        <div class="head-right">
+          <div class="mode" role="group" aria-label="Mode" id="mode">
+            <button type="button" class="mode-btn" data-mode="live" title="Live · real mic and Gnani calls">Live</button>
+            <button type="button" class="mode-btn" data-mode="offline" title="Offline demo · no paid calls">Offline</button>
+          </div>
+          <button type="button" class="icon-btn" id="drawer-open" title="Demo controls" aria-label="Open demo controls"><span data-icon="sliders"></span></button>
+        </div>
+      </header>
+
+      <!-- Step ribbon + one Next line -->
+      <section class="ribbon" aria-label="Progress">
+        <ol class="steps" id="steps"></ol>
+        <p class="next-line" id="next-line" aria-live="polite"></p>
+      </section>
+
+      <section class="layout" id="layout">
+        <!-- Ask Nova: input, mic, Run. Suggestions in a small dropdown. -->
+        <form class="command card" id="command-form" autocomplete="off" aria-label="Ask Nova">
+          <span class="command-mark" aria-hidden="true"></span>
+          <input class="command-input" id="command-input" type="text" placeholder="Ask Nova…" aria-label="Ask Nova">
+          <button class="icon-btn" type="button" id="command-mic" title="Speak a command" aria-label="Speak a command"><span data-icon="mic"></span></button>
+          <button class="btn btn-primary" type="submit" id="command-run">Run</button>
+          <div class="dropdown hidden" id="suggestions" role="listbox">
+            <button type="button" class="suggestion" role="option">Onboard Kaveri Handlooms</button>
+            <button type="button" class="suggestion" role="option">Call the owner</button>
+            <button type="button" class="suggestion" role="option">Run verification</button>
+            <button type="button" class="suggestion" role="option">Give me a summary</button>
+          </div>
+          <div class="popover hidden" id="command-reply" aria-live="polite"></div>
+        </form>
+
+        <section class="banner card hidden" id="banner" aria-live="polite"></section>
+
+        <div class="col-left">
+          <article class="card checklist-card">
+            <div class="card-head"><h2>Onboarding checklist</h2></div>
+            <div class="counts" id="counts"></div>
+            <div class="progress" id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+            <ul class="checklist" id="checklist"></ul>
+          </article>
+
+          <article class="card verify-card hidden" id="verify-card">
+            <div class="card-head"><h2>Verification report</h2><span class="muted small" id="verify-meta"></span></div>
+            <div id="verification"></div>
+          </article>
+        </div>
+
+        <article class="card sim-card">
+          <div class="card-head"><h2>Simulated: other people's side</h2></div>
+          <div class="tabs" role="tablist">
+            <button type="button" class="tab active" role="tab" data-tab="phone" aria-selected="true">Customer's phone</button>
+            <button type="button" class="tab" role="tab" data-tab="engineer" aria-selected="false">Engineer's chat<i class="tab-dot hidden"></i></button>
+          </div>
+
+          <div class="tab-panel phone-panel" data-panel="phone">
+            <div class="call-top">
+              <span id="lang-chip"></span>
+              <span class="muted small mono" id="call-timer"></span>
+            </div>
+            <div class="call-center">
+              <div class="orb-wrap" id="orb" data-state="idle">
+                <div class="orb">
+                  <span class="orb-blob cyan"></span><span class="orb-blob peach"></span>
+                </div>
+              </div>
+              <div class="orb-status" id="orb-status" aria-live="polite">Ready</div>
+              <div class="call-actions">
+                <button class="btn btn-primary btn-sm" id="call-btn"><span data-icon="phone"></span>Call customer</button>
+                <button class="btn btn-ghost btn-sm hidden" id="done-btn">Done speaking</button>
+              </div>
+              <div class="chips">
+                <span class="chip"><span class="chip-label">Owner</span><span class="chip-value" id="chip-owner">—</span></span>
+                <span class="chip"><span class="chip-label">WhatsApp</span><span class="chip-value mono" id="chip-number">—</span></span>
+              </div>
+            </div>
+            <div class="call-error hidden" id="call-error" role="alert"></div>
+            <div class="transcript-head">
+              <span class="muted small">Transcript</span>
+              <button type="button" class="en-toggle" id="en-toggle" aria-pressed="false" title="Show English">EN</button>
+            </div>
+            <div class="transcript" id="transcript"></div>
+          </div>
+
+          <div class="tab-panel hidden" data-panel="engineer"><div id="engineer"></div></div>
+        </article>
+
+        <aside class="card activity-card">
+          <div class="card-head"><h2>Activity</h2></div>
+          <ol class="timeline" id="timeline"></ol>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <!-- Demo controls drawer -->
+  <div class="drawer-scrim hidden" id="drawer-scrim"></div>
+  <aside class="drawer" id="drawer" aria-label="Demo controls" aria-hidden="true">
+    <div class="drawer-head">
+      <h2>Demo controls</h2>
+      <button type="button" class="icon-btn" id="drawer-close" aria-label="Close demo controls"><span data-icon="x"></span></button>
+    </div>
+    <section>
+      <div class="drawer-title">Supra AI platform</div>
+      <div id="mock"></div>
+    </section>
+    <section>
+      <button type="button" class="btn btn-sm" id="reset-demo"><span data-icon="refresh"></span>Reset demo</button>
+    </section>
+  </aside>
+
+  <script src="lines.js?v=7"></script>
+  <script src="app.js?v=7"></script>
+</body>
+</html>
