@@ -1,0 +1,36 @@
+# Secrets: never commit API keys (copy .env.example to .env.local)
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Logs and OS files
+*.log
+logs/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local tools and scratch
+.claude/
+_to_delete/
+scratch/
+
+# Generated audio that tools can rebuild (the app's tts_cache IS committed: Offline mode needs it)
+backend/tts_output/
+backend/tts_cache/_old/
+listen/
+test_audio/_converted/
+
+# Videos are linked from Drive, not committed
+demo-video/*.mp4
+nova-intro/out/
+nova-intro/frames*/
