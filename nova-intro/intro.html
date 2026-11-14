@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Nova intro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@500&family=JetBrains+Mono:wght@500&display=block" rel="stylesheet">
+<style>
+/* Colours from the Nova app (frontend/styles.css): --ink background, --verified as the ONE accent */
+:root { --bg:#111318; --card:#191c22; --line:rgba(255,255,255,.09); --text:#f5f6f8; --muted:#a3a8b1; --dim:#6b7079; --accent:#1f9d55; }
+html,body { margin:0; background:#111318; overflow:hidden; }
+#stage { position:relative; width:1920px; height:1080px; overflow:hidden; background:var(--bg); color:var(--text);
+  font-family:Inter, "Noto Sans Devanagari", system-ui, sans-serif; letter-spacing:-.02em; }
+.scene { position:absolute; inset:0; visibility:hidden; }
+.head { position:absolute; left:100px; top:0; width:640px; font-weight:600; font-size:60px; line-height:1.12; letter-spacing:-.035em; }
+.ln { display:block; overflow:hidden; padding-bottom:.12em; margin-bottom:-.12em; }
+.ln > span { display:inline-block; white-space:nowrap; }
+.sub { margin-top:30px; font-size:34px; font-weight:500; line-height:1.3; letter-spacing:-.01em; color:var(--muted); }
+.acc { color:var(--accent); }
+/* Cards: drawn at 720 px and scaled 1.44x (about 1.4x the first cut); smallest text 22 px -> 32 px on screen */
+.card { position:absolute; left:0; width:720px; transform-origin:left top; background:var(--card); border:1px solid var(--line); border-radius:20px;
+  box-shadow:0 30px 80px rgba(0,0,0,.35); padding:26px 30px; box-sizing:border-box; }
+.card-top { display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:23px; color:var(--muted); font-weight:500; margin-bottom:14px; letter-spacing:-.01em; }
+.tag { font-size:22px; font-weight:500; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 12px; letter-spacing:0; white-space:nowrap; }
+.row { position:relative; display:flex; align-items:center; gap:14px; font-size:26px; padding:11px 12px; margin:0 -12px; border-top:1px solid var(--line); border-radius:12px; }
+.row:first-of-type { border-top-color:transparent; }
+.circle { width:24px; height:24px; border-radius:50%; border:2px solid var(--dim); box-sizing:border-box; flex:none; }
+.pill { margin-left:auto; display:inline-flex; align-items:center; gap:9px; font-size:22px; font-weight:500; padding:4px 14px; border-radius:999px;
+  border:1px solid var(--line); color:var(--text); letter-spacing:0; white-space:nowrap; }
+.pill.bad { border-color:rgba(255,255,255,.7); font-weight:600; }
+.pill.swap { position:absolute; right:12px; }
+.dot { width:10px; height:10px; border-radius:50%; background:var(--accent); flex:none; display:inline-block; }
+.x { font-weight:700; font-size:20px; }
+.chips { display:flex; gap:10px; }
+.chip { font-size:22px; font-weight:500; padding:4px 14px; border-radius:999px; border:1px solid var(--line); color:var(--muted); letter-spacing:0; }
+.chip.on { border-color:var(--accent); color:var(--text); }
+.bub { border-radius:16px; padding:14px 18px; margin-top:12px; }
+.who { font-size:22px; color:var(--muted); font-weight:500; margin-bottom:6px; letter-spacing:0; }
+.bub .hi { font-size:28px; font-weight:500; letter-spacing:0; }
+.bub .en { font-size:22px; color:var(--muted); margin-top:5px; letter-spacing:0; }
+.bub.nova { background:#22262e; }
+.bub.owner { background:transparent; border:1px solid var(--line); margin-left:auto; width:max-content; }
+.rb { padding:14px 0; border-top:1px solid var(--line); display:flex; align-items:center; gap:18px; }
+.rb:first-of-type { border-top:0; padding-top:2px; }
+.rb .lbl { font-size:22px; color:var(--muted); font-weight:500; letter-spacing:0; margin-bottom:4px; }
+.rb .q { font-size:28px; font-weight:500; }
+.rb .qhi { font-size:22px; color:var(--muted); margin-top:4px; letter-spacing:0; }
+.yn { margin-left:auto; display:flex; gap:10px; }
+.btn { font-size:22px; font-weight:600; padding:8px 20px; border-radius:11px; border:1px solid var(--line); color:var(--muted); letter-spacing:0; position:relative; overflow:hidden; }
+.btn .fill, .approve .fill { position:absolute; inset:0; background:var(--accent); opacity:0; }
+.btn span, .approve span { position:relative; }
+.flag { margin-top:14px; display:flex; flex-direction:column; }
+.msg { background:#22262e; border-radius:16px; padding:14px 18px; margin-top:0; }
+.msg .txt { font-size:24px; line-height:1.35; letter-spacing:-.01em; }
+.fixed { align-self:flex-end; margin-top:10px; border:1px solid var(--line); border-radius:16px; padding:10px 18px; display:flex; align-items:center; gap:14px; }
+.fixed .who { margin:0; }
+.fixed .txt { font-size:24px; font-weight:600; }
+.status { display:flex; align-items:center; gap:12px; font-size:30px; font-weight:600; color:var(--accent); margin-bottom:12px; }
+.status .dot { width:13px; height:13px; }
+.intro { font-size:24px; font-weight:600; margin-bottom:6px; }
+.blt { display:flex; align-items:center; gap:14px; font-size:24px; color:#dfe1e5; padding:5px 0; letter-spacing:-.01em; }
+.blt::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--muted); flex:none; }
+.foot { display:flex; align-items:center; justify-content:space-between; margin-top:16px; padding-top:16px; border-top:1px solid var(--line); }
+.voice { font-size:22px; color:var(--muted); display:flex; align-items:center; gap:10px; letter-spacing:0; }
+.approve { font-size:22px; font-weight:600; padding:11px 22px; border-radius:12px; background:var(--text); color:#111318; letter-spacing:0; position:relative; overflow:hidden; }
+.title { position:absolute; left:0; width:1920px; text-align:center; }
+.models { display:inline-flex; gap:14px; justify-content:center; }
+.m { display:inline-flex; align-items:baseline; gap:14px; font:500 32px "JetBrains Mono", Consolas, monospace; color:var(--text); letter-spacing:0; border:1px solid var(--line); border-radius:12px; padding:12px 18px; background:var(--card); }
+.m .k { font:500 26px Inter, sans-serif; color:var(--muted); }
+.m .v { font:500 26px Inter, sans-serif; color:var(--text); }
+/* 4:5 LinkedIn version (intro.html?fmt=45): same timeline, recomposed, not cropped */
+.f45 #stage { width:1080px; height:1350px; }
+.f45 .head { left:80px; width:920px; font-size:66px; }
+.f45 .sub { font-size:34px; margin-top:24px; }
+.f45 .title { width:920px; left:80px; }
+.f45 #t-line { font-size:44px !important; line-height:1.25; }
+.f45 .models { flex-direction:column; align-items:center; gap:12px; }
+.f45 .m { white-space:nowrap; font-size:28px; }
+.f45 .m .k, .f45 .m .v { font-size:23px; }
+</style></head>
+<body>
+<div id="stage">
+
+  <!-- 1. Problem (frame 0 = LinkedIn thumbnail: headline and sub-label fully visible) -->
+  <div class="scene" id="s1">
+    <div class="head"><span class="ln"><span>Onboarding a new</span></span><span class="ln"><span>customer takes calls,</span></span><span class="ln"><span>chasing and</span></span><span class="ln"><span>follow-ups.</span></span>
+      <div class="sub">Onboarding a customer onto Supra AI, an AI WhatsApp support bot (simulated)</div></div>
+    <div class="card">
+      <div class="card-top"><span>Kaveri Handlooms · new customer</span><span class="tag">To do</span></div>
+      <div class="row r"><span class="circle"></span>Call the owner</div>
+      <div class="row r"><span class="circle"></span>Chase the WhatsApp number</div>
+      <div class="row r"><span class="circle"></span>Follow up with the engineer</div>
+    </div>
+  </div>
+
+  <!-- 2. Call -->
+  <div class="scene" id="s2">
+    <div class="head"><span class="ln"><span>Nova calls the owner</span></span><span class="ln"><span>in Hindi or Kannada.</span></span></div>
+    <div class="card">
+      <div class="card-top"><span>Call · Kaveri Handlooms</span><span class="chips"><span class="chip on">Hindi</span><span class="chip">Kannada</span></span></div>
+      <div class="bub nova r"><div class="who">Nova</div><div class="hi">पहले, आपका नाम क्या है?</div><div class="en">First, what's your name?</div></div>
+      <div class="bub owner r"><div class="who">Owner · simulated</div><div class="hi">मेरा नाम मंजुनाथ है।</div><div class="en">My name is Manjunath.</div></div>
+    </div>
+  </div>
+
+  <!-- 3. Read-back -->
+  <div class="scene" id="s3">
+    <div class="head"><span class="ln"><span>It confirms the name</span></span><span class="ln"><span>and WhatsApp number.</span></span></div>
+    <div class="card">
+      <div class="card-top"><span>Read-back</span><span class="tag">Yes or no</span></div>
+      <div class="rb"><div><div class="lbl">Name</div><div class="q">Manjunath, correct?</div><div class="qhi">मंजुनाथ, सही है?</div></div>
+        <div class="yn"><span class="btn y1"><span class="fill"></span><span>Yes</span></span><span class="btn"><span>No</span></span></div></div>
+      <div class="rb"><div><div class="lbl">WhatsApp number</div><div class="q">98450 12345, correct?</div></div>
+        <div class="yn"><span class="btn y2"><span class="fill"></span><span>Yes</span></span><span class="btn"><span>No</span></span></div></div>
+    </div>
+  </div>
+
+  <!-- 4. Turning point: a check fails, Nova flags it to the engineer, it gets fixed -->
+  <div class="scene" id="s4">
+    <div class="head"><span class="ln"><span>It verifies the setup</span></span><span class="ln"><span>and blocks go-live</span></span><span class="ln"><span>if a check fails.</span></span></div>
+    <div class="card">
+      <div class="card-top"><span>Checks</span><span class="tag">Simulated Supra AI platform</span></div>
+      <div class="row ok4">Account created<span class="pill st"><span class="dot"></span>Verified</span></div>
+      <div class="row ok4">Owner details<span class="pill st"><span class="dot"></span>Verified</span></div>
+      <div class="row ok4">WhatsApp number<span class="pill st"><span class="dot"></span>Verified</span></div>
+      <div class="row" id="tc">Test chat<span class="pill bad st" id="tc-bad"><span class="x">×</span>Blocked</span><span class="pill swap" id="tc-ok"><span class="dot"></span>Verified</span></div>
+      <div class="row ok4">Training scheduled<span class="pill st"><span class="dot"></span>Verified</span></div>
+      <div class="flag">
+        <!-- verbatim engineer_message from backend/nova_flow.py run_verification() for this block -->
+        <div class="msg" id="flag-msg"><div class="who">Nova to engineer</div><div class="txt">The test reply came in English. Please fix it and mark done again.</div></div>
+        <div class="fixed" id="flag-fix"><span class="who">Engineer</span><span class="txt">Fixed</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Report + approve -->
+  <div class="scene" id="s5">
+    <div class="head"><span class="ln"><span>Then it reports</span></span><span class="ln"><span>to the founder</span></span><span class="ln"><span>in English.</span></span><span class="ln"><span class="acc">You approve.</span></span></div>
+    <div class="card">
+      <div class="status"><span class="dot"></span>Ready to go live</div>
+      <div class="intro">Here are your updates</div>
+      <div class="blt b">Kaveri Handlooms · owner Manjunath</div>
+      <div class="blt b">WhatsApp number 98450 12345 confirmed</div>
+      <div class="blt b">Account verified and number connected</div>
+      <div class="blt b">Bot tested in customer's language</div>
+      <div class="foot">
+        <span class="voice"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a3a8b1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>Spoken report in English</span>
+        <span class="approve"><span class="fill"></span><span>Approve go-live</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. End card: exactly the services Live mode calls (backend/config.py) -->
+  <div class="scene" id="s6">
+    <div class="title" style="top:150px"><span class="ln"><span id="t-nova" style="font-size:180px;font-weight:700;letter-spacing:-.05em">Nova</span></span></div>
+    <div class="title" id="t-line" style="top:390px;font-size:48px;font-weight:500;color:#e3e5e9">Powered by Gnani's Prisma and Timbre voice models</div>
+    <div class="title" id="t-m1" style="top:492px"><span class="models">
+      <span class="m"><span class="k">Speech to text</span>prisma-v3.0</span>
+      <span class="m"><span class="k">Voices</span>timbre-v3.0 · timbre-v2.5</span></span></div>
+    <div class="title" id="t-m2" style="top:590px"><span class="models">
+      <span class="m"><span class="k">Understanding replies · Sarvam</span>sarvam-105b-conversations</span></span></div>
+    <div class="title" id="t-tag" style="top:725px"><span style="display:inline-flex;align-items:center;gap:14px;font-size:36px;font-weight:600;color:#e3e5e9;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:12px 26px;letter-spacing:-.01em"><span class="dot" style="width:12px;height:12px"></span>Prototype · synthetic data</span></div>
+  </div>
+
+</div>
+<script>
+// Deterministic engine: every frame is computed from t alone (no timers, no transitions, no preview UI).
+// Beat lengths in real seconds = each voice line's speech + 0.6 s (beat 4 + 2.5 s), set by mix.py beats. Moves are authored in design
+// time u = seconds / K, so K slows every move evenly.
+const BEATS = [5.622, 4.318, 4.447, 7.1, 5.225, 7.305];
+const K = 1.4;
+const START = BEATS.map((_, i) => BEATS.slice(0, i).reduce((a, b) => a + b, 0));
+const T = BEATS.reduce((a, b) => a + b, 0);
+window.FILM_T = T;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+// Closed-form spring step response (damping ratio 0.82: tiny overshoot, no bounce), exact 0/1 at the ends
+function spring(x) {
+  if (x <= 0) return 0; if (x >= 1) return 1;
+  const z = .82, w = 9, wd = w * Math.sqrt(1 - z * z);
+  const v = 1 - Math.exp(-z * w * x) * (Math.cos(wd * x) + (z * w / wd) * Math.sin(wd * x));
+  return x > .97 ? v + (1 - v) * (x - .97) / .03 : v;
+}
+const ein = (x) => x * x * x;
+const prog = (t, a, d) => clamp((t - a) / d);
+const mix = (a, b, p) => a + (b - a) * p;
+
+const SC = [1, 2, 3, 4, 5, 6].map((i) => $('#s' + i));
+const F45 = new URLSearchParams(location.search).get('fmt') === '45';
+if (F45) document.documentElement.classList.add('f45');
+const W = F45 ? 1080 : 1920, H = F45 ? 1350 : 1080;
+window.FILM_SIZE = [W, H];
+let CARD_SCALE = F45 ? 1.25 : 1.44;
+const CARD_RIGHT = 80;
+function layout45() {
+  SC.forEach((s) => {
+    s.style.visibility = 'visible';
+    const h = $('.head', s), c = $('.card', s);
+    if (h && c) {                                  // headline on top, card centred below, block centred
+      const gap = 60, ch = c.offsetHeight * CARD_SCALE, top = Math.round((H - h.offsetHeight - gap - ch) / 2);
+      h.style.top = top + 'px';
+      c.style.left = Math.round((W - 720 * CARD_SCALE) / 2) + 'px';
+      c.style.top = (top + h.offsetHeight + gap) + 'px';
+      if (top < 50) console.error(`4:5 block too tall in ${s.id}`);
+    } else {                                       // end card: stack every line, centred
+      const ids = ['#t-nova', '#t-line', '#t-m1', '#t-m2', '#t-tag'];
+      const els = ids.map((q) => q === '#t-nova' ? $(q).closest('.title') : $(q));
+      const gaps = [20, 44, 12, 48];
+      const total = els.reduce((a, e) => a + e.offsetHeight, 0) + gaps.reduce((a, b) => a + b, 0);
+      let y = Math.round((H - total) / 2);
+      els.forEach((e, i) => { e.style.top = y + 'px'; y += e.offsetHeight + (gaps[i] || 0); });
+    }
+    s.style.visibility = 'hidden';
+  });
+}
+function layout() {
+  if (F45) return layout45();
+  SC.forEach((s) => {
+    s.style.visibility = 'visible';
+    const h = $('.head', s), c = $('.card', s);
+    if (h) h.style.top = Math.round((1080 - h.offsetHeight) / 2) + 'px';
+    if (c) {
+      c.style.left = (1920 - CARD_RIGHT - 720 * CARD_SCALE) + 'px';
+      c.style.top = Math.round((1080 - c.offsetHeight * CARD_SCALE) / 2) + 'px';
+      // layout guard: headline must not reach the card, card must fit the frame
+      const hr = Math.max(...$$('.ln > span', s).map((e) => e.getBoundingClientRect().right));
+      if (hr > parseFloat(c.style.left) - 40) console.error(`overlap in ${s.id}: headline ends at ${hr}`);
+      if (c.offsetHeight * CARD_SCALE > 1040) console.error(`card too tall in ${s.id}`);
+    }
+    s.style.visibility = 'hidden';
+  });
+}
+
+function head(s, u, still) {
+  $$('.ln > span', s).forEach((sp, i) => {
+    const p = still ? 1 : spring(prog(u, i * .09, .5));
+    sp.style.transform = `translateY(${(1 - p) * 118}%)`;
+  });
+}
+function card(s, u) {
+  const c = $('.card', s), p = spring(prog(u, .55, .55));
+  c.style.opacity = clamp(p * 1.6); c.style.transform = `translateY(${(1 - p) * 46}px) scale(${CARD_SCALE})`;
+}
+function exit(s, lt, len) {
+  const p = ein(prog(lt, len - .42, .42));
+  s.style.opacity = 1 - p; s.style.transform = `translateY(${-p * 30}px)`;
+}
+function show(e, p, dy = 14) { e.style.opacity = clamp(p * 1.4); e.style.transform = `translateY(${(1 - p) * dy}px)`; }
+function reveal(els, u, start, gap, dur = .32, dy = 14) { els.forEach((e, i) => show(e, spring(prog(u, start + i * gap, dur)), dy)); }
+function press(el, u, at) {
+  const p = spring(prog(u, at, .3));
+  $('.fill', el).style.opacity = p; el.style.color = p > .5 ? '#fff' : ''; el.style.borderColor = p > .5 ? 'transparent' : '';
+  el.style.transform = `scale(${1 - .06 * Math.sin(Math.PI * clamp((u - at) / .22))})`;
+}
+
+const INNER = {
+  1: (s, u) => reveal($$('.r', s), u, 1.05, .22),
+  2: (s, u) => reveal($$('.r', s), u, 1.05, .45, .36, 18),
+  3: (s, u) => { press($('.y1', s), u, 1.1); press($('.y2', s), u, 1.55); },
+  // Beat 4, one thing at a time: checks resolve -> failed row highlighted, others dim -> Nova flags it to
+  // the engineer -> engineer: Fixed -> the row turns Verified -> rows come back.
+  4: (s, u) => {
+    reveal($$('.st', s), u, 1.05, .1, .26, 0);
+    const focus = spring(prog(u, 1.75, .35)) * (1 - spring(prog(u, 4.21, .35)));   // u x 1.4 = seconds
+    $$('.ok4', s).forEach((r) => { r.style.opacity = mix(1, .3, focus); });
+    const tc = $('#tc', s);
+    tc.style.background = `rgba(255,255,255,${.07 * focus})`;
+    tc.style.boxShadow = `inset 0 0 0 1px rgba(255,255,255,${.45 * focus})`;
+    show($('#flag-msg', s), spring(prog(u, 3.0, .36)), 16);    // 4.2 s, after the line
+    show($('#flag-fix', s), spring(prog(u, 3.57, .32)), 12);   // 5.0 s
+    const v = spring(prog(u, 3.93, .3));                        // 5.5 s: row turns Verified
+    $('#tc-bad', s).style.opacity = $$('.st', s)[3].style.opacity * (1 - v);
+    $('#tc-ok', s).style.opacity = v;
+    $('#tc-ok', s).style.transform = `translateY(${(1 - v) * 8}px)`;
+  },
+  5: (s, u) => {
+    reveal($$('.b', s), u, 1.0, .16, .28, 10);
+    show($('.approve', s), spring(prog(u, 2.36, .3)), 10);     // 3.3 s
+    if (u >= 2.79) press($('.approve', s), u, 2.79);           // 3.9 s, on "green light"
+  },
+};
+
+function title(u) {
+  $('#t-nova').style.transform = `translateY(${(1 - spring(prog(u, 0, .6))) * 118}%)`;
+  show($('#t-line'), spring(prog(u, .6, .45)), 18);
+  show($('#t-m1'), spring(prog(u, 1.0, .4)), 14);
+  show($('#t-m2'), spring(prog(u, 1.35, .4)), 14);
+  show($('#t-tag'), spring(prog(u, 1.95, .4)), 12);
+}
+
+window.seek = async (t) => {
+  t = clamp(t, 0, T);
+  SC.forEach((s, i) => {
+    const lt = t - START[i], len = BEATS[i], last = i === 5;
+    const on = last ? lt >= 0 : lt >= 0 && lt < len;
+    s.style.visibility = on ? 'visible' : 'hidden';
+    if (!on) return;
+    const u = lt / K;
+    if (last) { title(u); return; }
+    head(s, u, i === 0);            // beat 1 headline is already in place at frame 0 (thumbnail)
+    // 4:5: beat 1 card is also in place at frame 0 (thumbnail); its rows still reveal one at a time
+    card(s, F45 && i === 0 ? 2 : u); INNER[i + 1](s, u); exit(s, lt, len);
+  });
+};
+
+document.fonts.ready.then(async () => {
+  await Promise.all(['600 60px Inter', '500 28px "Noto Sans Devanagari"', '500 26px "JetBrains Mono"'].map((f) => document.fonts.load(f, 'नमस्ते Aa')));
+  layout();
+  await seek(0);
+  window.ready = true;
+});
+</script>
+</body></html>
